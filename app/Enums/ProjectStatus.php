@@ -25,4 +25,5 @@ enum ProjectStatus: string
     {
         return array_map(fn(ProjectStatus $status) => $status->value, self::cases());
     }
+
 }
