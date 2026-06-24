@@ -21,7 +21,7 @@ class ProjectController extends Controller
     
     
     public function __construct(
-        protected CreateProjectAction $createProject,
+        // protected CreateProjectAction $createProject,
         protected UpdateProjectAction $updateProject,
         protected ListProjectsAction $listProjects,
         protected ShowProjectAction $showProject,
@@ -42,8 +42,8 @@ class ProjectController extends Controller
     public function store(CreateProjectRequest $request) 
     {
         // $this->authorize('create', Project::class);
-        $project = $this->createProject->execute($request->validated());
-
+        // $project = $this->createProject->execute($request->validated());
+        $project = Project::create($request->validated());
         return $this->successResponse($project, 'Project created successfully', 201);
     }
 

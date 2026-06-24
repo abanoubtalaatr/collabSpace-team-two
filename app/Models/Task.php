@@ -2,17 +2,25 @@
 
 namespace App\Models;
 
-use App\Enums\ProjectStatus;
 use App\Enums\TaskStatus;
+use App\Enums\TaskPriority;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Task extends Model
 {
-    protected $fillable = ['project_id', 'team_id', 'name', 'description', 'status'];
+    use HasFactory; 
+
+    protected $fillable = ['project_id', 'team_id', 'name', 'description', 'status', 'priority', 'start_date', 'end_date'];
+
+    // Casts
     protected $casts = [
-        'status' => TaskStatus::class
+        'status' => TaskStatus::class,
+        'priority' => TaskPriority::class
     ];
 
+
+    // Relationships
     public function project(){
         return $this->belongsTo(Project::class);
     }
@@ -21,7 +29,10 @@ class Task extends Model
         return $this->belongsTo(Team::class);
     }
 
-    public function files(){
-        return $this->hasMany(File::class);
+    public function attachments() 
+    {
+        return $this->belongsToMany(File::class, 'task_attachments');
     }
+
+
 }

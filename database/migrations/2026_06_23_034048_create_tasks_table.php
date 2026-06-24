@@ -4,6 +4,9 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+use App\Enums\TaskStatus;
+use App\Enums\TaskPriority;
+
 return new class extends Migration
 {
     /**
@@ -13,12 +16,20 @@ return new class extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('project_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('team_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->string('status')->default('pending');
+            $table->enum('status', TaskStatus::values())->default(TaskStatus::PENDING->value);
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->enum('priority', TaskPriority::values())->default(TaskPriority::LOW->value);
             $table->timestamps();
+
+            // Relationships     
+            $table->foreignId('project_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
+
+            // Constraints
+
         });
     }
 
