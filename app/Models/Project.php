@@ -24,9 +24,21 @@ class Project extends Model
 
     // relationships: 
     /*********************/
-    public function creator() 
-    { 
-        return $this->belongsTo(User::class, 'created_by'); 
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+
+    public function conversations()
+    {
+        return $this->hasMany(Conversation::class, 'project_id');
+    }
+
+    public function groupConversation()
+    {
+        return $this->hasOne(Conversation::class, 'project_id')
+            ->where('type', 'group');
     }
 
     public function teams(): BelongsToMany
@@ -46,10 +58,6 @@ class Project extends Model
 
     public function meetings(){
         return $this->hasMany(Meeting::class);
-    }
-
-    public function messages(){
-        return $this->hasMany(Message::class);
     }
 
     public function files(){
