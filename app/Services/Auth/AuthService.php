@@ -40,4 +40,10 @@ class AuthService
         $status = $this->resetPasswordAction->execute($data);
         return $status === Password::PASSWORD_RESET;
     }
+
+    public function logout($user)
+    {
+
+        $user->currentAccessToken()->delete();
+    }
 }

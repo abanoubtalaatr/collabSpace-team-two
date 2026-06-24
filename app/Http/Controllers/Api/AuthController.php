@@ -10,6 +10,7 @@ use App\Http\Requests\Api\Auth\ResetPasswordRequest;
 use App\Services\Auth\AuthService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -28,7 +29,7 @@ class AuthController extends Controller
         return $this->successResponse([
             'user'  => $result['user'],
             'token' => $result['token'],
-        ], 'user loged in successfuly');
+        ], 'user loged in successfully');
     }
 
     public function register(RegisterRequest $request): JsonResponse
@@ -39,7 +40,7 @@ class AuthController extends Controller
         return $this->successResponse([
             'user'  => $result['user'],
             'token' => $result['token'],
-        ], 'user registerd sccessfuly', 201);
+        ], 'user registerd sccessfully', 201);
     }
 
     public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
@@ -58,9 +59,16 @@ class AuthController extends Controller
         $reset = $this->authService->resetPassword($request->validated());
 
         if (!$reset) {
-            return $this->errorResponse(null,'Reset link expired ', 400);
+            return $this->errorResponse(null, 'Reset link expired ', 400);
         }
 
-        return $this->successResponse(null, 'Password reset successfuly',200);
+        return $this->successResponse(null, 'Password reset successfully', 200);
+    }
+
+    public function logout(Request $request): JsonResponse
+    {
+        $this->authService->logout($request->user());
+
+        return $this->successResponse(null, 'user logedout successfully');
     }
 }
