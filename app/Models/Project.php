@@ -6,19 +6,20 @@ use App\Models\Concerns\Filterable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Enums\ProjectStatus;
-use App\Enums\Priority;
+use App\Enums\ProjectPriority;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 
 
 class Project extends Model
 {
-    use Filterable; 
+    use Filterable, hasFactory; 
 
     protected $fillable = ['name', 'description', 'start_date', 'end_date', 'deadline', 'type', 'status', 'priority', 'created_by'];
 
     protected $casts = [
         'status' => ProjectStatus::class ,
-        'priority' => Priority::class
+        'priority' => ProjectPriority::class
     ];
 
 
@@ -34,10 +35,6 @@ class Project extends Model
         return $this->belongsToMany(Team::class); 
     }
 
-    public  function members(): BelongsToMany
-    {
-        return $this->belongsToMany(User::class, 'project_users', 'project_id', 'user_id'); 
-    }
 
 
     public function tasks(){

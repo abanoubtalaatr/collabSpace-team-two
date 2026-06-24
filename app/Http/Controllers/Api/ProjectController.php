@@ -14,6 +14,7 @@ use App\Actions\Project\UpdateProjectAction;
 use App\Actions\Project\ListProjectsAction;
 use App\Actions\Project\ShowProjectAction;
 use App\Actions\Project\DeleteProjectAction;
+use App\Http\Resources\ProjectResource;
 
 class ProjectController extends Controller
 {
@@ -33,7 +34,9 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        return $this->listProjects->execute();
+        
+         $projects = $this->listProjects->execute();
+         return $this->successResponse(ProjectResource::collection($projects), 'Projects retrieved successfully', 200);
     }
 
     /**
@@ -42,6 +45,7 @@ class ProjectController extends Controller
     public function store(CreateProjectRequest $request) 
     {
         // $this->authorize('create', Project::class);
+        // TODO: we need to add the authentication functionality to the project creation
         $project = $this->createProject->execute($request->validated());
 
         return $this->successResponse($project, 'Project created successfully', 201);

@@ -13,13 +13,21 @@ return new class extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->text('description')->nullable();
+            $table->string('name'); 
+            $table->string('slug')->unique();
+            $table->string('type')->default('saas')->comment('saas, web, mobile, desktop, other');
             $table->date('start_date');
-            $table->date('deadline');
-            $table->string('priority')->default('medium');
-            $table->string('status')->default('pending');
+            $table->date('end_date');
+            $table->date('deadline')->nullable();
+            $table->enum('status', ['pending', 'in_progress', 'on_hold', 'cancelled', 'completed'])->default('pending');
+            $table->text('description')->nullable();
+            $table->enum('priority', ['low', 'medium', 'high'])->default('medium');
+            $table->integer('progress_percentage')->default(0);
             $table->timestamps();
+
+
+            // Relationships
+            $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
         });
     }
 
