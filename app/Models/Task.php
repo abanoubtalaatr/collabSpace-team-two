@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
-    protected $fillable = ['project_id', 'team_id', 'name', 'description', 'status'];
+    protected $fillable = ['project_id', 'team_id', 'name', 'description', 'status','completed_at', 'deadline'];
     protected $casts = [
         'status' => TaskStatus::class
     ];
