@@ -5,17 +5,18 @@ namespace App\Actions\Task;
 use App\Http\Requests\Api\StoreTaskRequest;
 use App\Models\Task;
 use Illuminate\Support\Facades\DB;
+use App\Models\Project;
 
 class CreateTaskAction
 {
-    public function execute(StoreTaskRequest $request)
+    public function execute(StoreTaskRequest $request, ?Project $project = null)
     {
         $validated = $request->validated(); 
 
         DB::beginTransaction(); 
         try {
             $task = Task::create([
-                'project_id' => $validated['project_id'],
+                'project_id' => $project ? $project->id : $validated['project_id'],
                 'name' => $validated['name'],
                 'description' => $validated['description'],
                 'status' => $validated['status'],

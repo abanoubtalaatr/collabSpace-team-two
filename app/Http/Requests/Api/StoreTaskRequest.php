@@ -25,6 +25,7 @@ class StoreTaskRequest extends FormRequest
      */
     public function rules(): array
     {
+        $projectIdRule = in_array($this->route()->getName(), ['projects.tasks.store', 'projects.tasks.index']) ? ['nullable', 'exists:projects,id'] : ['required', 'exists:projects,id'];
         return [
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
@@ -32,7 +33,7 @@ class StoreTaskRequest extends FormRequest
             'priority' => ['required', 'string', Rule::in(TaskPriority::values())],
             'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date'],
-            'project_id' => ['required', 'exists:projects,id'],
+            'project_id' => $projectIdRule,
             'teams' => ['nullable', 'array'],
             'teams.*' => ['nullable', 'exists:teams,id'],
             'attachments' => ['nullable', 'array'],

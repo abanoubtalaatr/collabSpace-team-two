@@ -22,6 +22,7 @@ class ListTasksAction
             $query->where('project_id', $request->input('project_id'));
         }
 
+
         if ($request->has('search')) {
             $query->where('name', 'like', '%' . $request->input('search') . '%');
         }

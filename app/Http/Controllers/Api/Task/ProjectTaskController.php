@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Api\Task;
 
 use App\Http\Controllers\Controller;
-use App\Actions\Task\ListProjectTasksAction;
-use App\Actions\Task\CreateProjectTaskAction;
+use App\Actions\Task\CreateTaskAction;
+use App\Actions\Task\ListTasksAction;
 use App\Models\Project;
 use App\Http\Requests\Api\StoreTaskRequest;
 use App\Trait\ApiResponse;
+use Illuminate\Http\Request;
 
 class ProjectTaskController extends Controller
 {
@@ -15,17 +16,19 @@ class ProjectTaskController extends Controller
 
     
     public function __construct(
-        private ListProjectTasksAction $listProjectTasksAction, 
-        private CreateProjectTaskAction $createProjectTaskAction
+        private ListTasksAction $listTasksAction, 
+        private CreateTaskAction $createTaskAction
     ) {}
 
 
     /**
      * List all tasks of a project
      */
-    public function index(Project $project) 
+    public function index(Project $project, Request $request) 
     {
-        $tasks = $this->listProjectTasksAction->execute($project);
+        $request->merge(['project_id' => $project->id]);
+
+        $tasks = $this->listTasksAction->execute($request);
         return $this->successResponse($tasks, 'Tasks fetched successfully');
     }
 
@@ -34,7 +37,8 @@ class ProjectTaskController extends Controller
      */
     public function store(Project $project, StoreTaskRequest $request)
     {
-        $task = $this->createProjectTaskAction->execute($project, $request);
+        $request->merge(['project_id' => $project->id]);
+        $task = $this->createTaskAction->execute($request, $project);
         return $this->successResponse($task, 'Task created successfully');
     }
 }
