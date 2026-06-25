@@ -10,15 +10,32 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Laravel\Sanctum\HasApiTokens;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
-    protected $fillable = ['name', 'email', 'password', 'job_title', 'years_of_experience'];
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'job_title',
+        'years_of_experience',
+        'last_seen_at',
+    ];
+
+
+    public function isOnline(): bool
+    {
+        return $this->last_seen_at &&
+            $this->last_seen_at->gt(
+                now()->subMinutes(5)
+            );
+    }
 
 
     public function conversations()
@@ -51,7 +68,7 @@ class User extends Authenticatable
 
     public function messageMentions()
     {
-        return $this->hasMany(MessageMention::class,'mentioned_user_id');
+        return $this->hasMany(MessageMention::class, 'mentioned_user_id');
     }
 
     public function createdProjects()
@@ -92,6 +109,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'last_seen_at' => 'datetime',
         ];
     }
 

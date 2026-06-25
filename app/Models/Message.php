@@ -13,7 +13,8 @@ class Message extends Model
         'conversation_id',
         'sender_id',
         'reply_to_id',
-        'message'
+        'message',
+        'edited_at'
     ];
 
     protected $casts = [
