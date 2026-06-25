@@ -2,6 +2,8 @@
 
 namespace App\Filters;
 
+use App\Enums\TaskStatus;
+
 
 class TaskFilter extends QueryFilter
 {
@@ -15,5 +17,10 @@ class TaskFilter extends QueryFilter
         return $this->builder->where('team_id', $value);
     }
 
+    public function status(string $value) 
+    {
+        $value = TaskStatus::from($value);
+        return $this->builder->where('status', $value);
+    }
 }
     

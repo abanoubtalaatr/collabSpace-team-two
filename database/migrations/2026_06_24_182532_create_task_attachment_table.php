@@ -17,10 +17,10 @@ return new class extends Migration
 
             // Relationships
             $table->foreignId('task_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('file_id')->constrained()->cascadeOnDelete();
 
             // Constraints
-            $table->unique(['task_id', 'user_id']);
+            $table->unique(['task_id', 'file_id']);
         });
     }
 

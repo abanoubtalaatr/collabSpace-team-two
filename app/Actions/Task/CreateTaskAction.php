@@ -3,29 +3,34 @@
 namespace App\Actions\Task;
 
 use App\Http\Requests\Api\StoreTaskRequest;
-use App\Models\Project;
 use App\Models\Task;
 use Illuminate\Support\Facades\DB;
 
 class CreateTaskAction
 {
-    public function execute(Project $project, StoreTaskRequest $request)
+    public function execute(StoreTaskRequest $request)
     {
         $validated = $request->validated(); 
 
         DB::beginTransaction(); 
         try {
             $task = Task::create([
-                'project_id' => $project->id,
-                'name' => $request->name,
-                'description' => $request->description,
-                'status' => $request->status,
-                'priority' => $request->priority,
+                'project_id' => $validated['project_id'],
+                'name' => $validated['name'],
+                'description' => $validated['description'],
+                'status' => $validated['status'],
+                'priority' => $validated['priority'],
                 'created_by' => $request->user()->id,
             ]);
             // assign to the team 
-            if ($request->has('teams')) {
-                $task->teams()->attach($request->input('teams'));
+            if (isset($validated['teams'])) {
+                $task->teams()->attach($validated['teams']);
+            }
+
+            // upload the attachements 
+            if (isset($validated['attachments'])) {
+                // TODO: Call the file service to upload the attachement in the fle table 
+                // TODO: Attach the file to the task 
             }
 
             DB::commit(); 

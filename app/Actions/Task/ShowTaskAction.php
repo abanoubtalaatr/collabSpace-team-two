@@ -10,8 +10,8 @@ class ShowTaskAction
     /**
      * Create a new class instance.
      */
-    public function execute(Project $project, Task $task)
+    public function execute( Task $task)
     {
-        return $task;
+        return $task->load('project', 'teams', 'attachments');
     }
 }
