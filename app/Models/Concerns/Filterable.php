@@ -15,9 +15,7 @@ trait Filterable
             return $query; 
         }
 
-        $filter = new $filterClass($request); 
-
-        return $query; 
+        return (new $filterClass($request))->apply($query);
     }
 
 
