@@ -33,8 +33,8 @@ class CreateProjectRequest extends FormRequest
             'status' => ['required', Rule::in(ProjectStatus::values())],
             'priority' => ['required', Rule::in(ProjectPriority::values())],
             'description' => ['nullable', 'string', 'max:255'],
-            'users' => ['nullable', 'array'],
-            'users.*' => ['exists:users,id'],
+            'teams' => ['nullable', 'array'],
+            'teams.*' => ['exists:teams,id'],
             'files' => ['nullable', 'array'],
             'files.*' => ['file', 'mimes:pdf,doc,docx,xls,xlsx,ppt,pptx', 'max:10240'],
         ];
