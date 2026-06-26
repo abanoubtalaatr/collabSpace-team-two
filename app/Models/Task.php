@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Task extends Model
 {
+    protected $fillable = ['project_id', 'team_id', 'name', 'description', 'status','completed_at', 'deadline'];
     use HasFactory; 
 
     protected $fillable = ['project_id', 'name', 'description', 'status', 'priority', 'start_date', 'end_date', 'created_by'];
