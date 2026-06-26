@@ -11,8 +11,8 @@ class ListProjectsAction
     {
         $user = auth()->user();
 
-        if (in_array($user->role->name, ['admin', 'project_manager'])) {
-            return Project::with('members')->get(); 
+        if (in_array($user->role, ['admin', 'project_manager'])) {
+            return Project::with('members', 'tasks')->get(); 
         }
 
         return Project::whereHas('memebers', function ($query) use ($user) {

@@ -22,12 +22,18 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ProjectController;
+use App\Http\Controllers\Api\Task\UpdateTaskStatusController;
+use App\Http\Controllers\Api\Task\TaskController;
+use App\Http\Controllers\Api\Task\TaskAttachmentController;
+use App\Http\Controllers\Api\Task\ProjectTaskController;
+use App\Http\Controllers\Api\Task\BoardTaskController;
+use App\Http\Controllers\Api\Task\AssignTeamToTaskController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\Api\TeamController;
 
-// Projects Routes:
-Route::apiResource('projects', ProjectController::class);
 
+Route::middleware(['auth:sanctum','throttle:60,1'])->group(function () {
+    Route::apiResource('projects', ProjectController::class);
 // Projects Routes: 
 Route::apiResource('projects', ProjectController::class);
 
@@ -52,7 +58,13 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 //Team Routes:
 
-Route::apiResource('teams' , TeamController::class);
 
-Route::post('teams/{team}/assign_members' , [TeamController::class , 'assignMembers']);
-Route::post('teams/{team}/assign_projects' , [TeamController::class , 'assignProjects']);
+    // Task Routes: 
+    // ------------------------------------------------------------
+    Route::apiResource('tasks', TaskController::class); 
+    Route::apiResource('projects.tasks', ProjectTaskController::class)->scoped(['project' => 'id'])->only(['index', 'store']); 
+    Route::apiResource('tasks.attachments', TaskAttachmentController::class)->scoped(['task' => 'id'])->only(['index', 'store']);
+    Route::put('/tasks/{task}/teams', AssignTeamToTaskController::class)->scoped(['task' => 'id']);
+    Route::put('/tasks/{task}/status', UpdateTaskStatusController::class);
+    Route::get('/tasks/board', BoardTaskController::class)->name('tasks.kanban');
+});
