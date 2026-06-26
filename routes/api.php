@@ -1,13 +1,18 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\MeetingAiSummaryController;
 use App\Http\Controllers\Api\MeetingController;
 use App\Http\Controllers\Api\MeetingTranscriptController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-
-
-use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ProjectController;
+use App\Http\Controllers\Api\Task\AssignTeamToTaskController;
+use App\Http\Controllers\Api\Task\BoardTaskController;
+use App\Http\Controllers\Api\Task\ProjectTaskController;
+use App\Http\Controllers\Api\Task\TaskAttachmentController;
+use App\Http\Controllers\Api\Task\TaskController;
+use App\Http\Controllers\Api\Task\UpdateTaskStatusController;
+use App\Http\Controllers\Api\TeamController;
+use App\Http\Controllers\FileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -42,22 +47,9 @@ Route::prefix('auth')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 });
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\ProjectController;
-use App\Http\Controllers\Api\Task\UpdateTaskStatusController;
-use App\Http\Controllers\Api\Task\TaskController;
-use App\Http\Controllers\Api\Task\TaskAttachmentController;
-use App\Http\Controllers\Api\Task\ProjectTaskController;
-use App\Http\Controllers\Api\Task\BoardTaskController;
-use App\Http\Controllers\Api\Task\AssignTeamToTaskController;
-use App\Http\Controllers\FileController;
-use App\Http\Controllers\Api\TeamController;
-
 
 Route::middleware(['auth:sanctum','throttle:60,1'])->group(function () {
     Route::apiResource('projects', ProjectController::class);
-// Projects Routes: 
-Route::apiResource('projects', ProjectController::class);
 
 //files routes :
 Route::middleware('auth:sanctum')->group(function () {
@@ -86,7 +78,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('tasks', TaskController::class); 
     Route::apiResource('projects.tasks', ProjectTaskController::class)->scoped(['project' => 'id'])->only(['index', 'store']); 
     Route::apiResource('tasks.attachments', TaskAttachmentController::class)->scoped(['task' => 'id'])->only(['index', 'store']);
-    Route::put('/tasks/{task}/teams', AssignTeamToTaskController::class)->scoped(['task' => 'id']);
+    Route::put('/tasks/{task}/teams', AssignTeamToTaskController::class);
     Route::put('/tasks/{task}/status', UpdateTaskStatusController::class);
     Route::get('/tasks/board', BoardTaskController::class)->name('tasks.kanban');
 });
