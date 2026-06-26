@@ -7,15 +7,17 @@ use App\Actions\Message\ListMessagesAction;
 use App\Actions\Message\MarkMessageAsReadAction;
 use App\Actions\Message\SendMessageAction;
 use App\Actions\Message\UpdateMessageAction;
+use App\Events\MessageRead;
+use App\Events\UserTyping;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreMessageRequest;
+use App\Http\Requests\TypingRequest;
 use App\Http\Requests\UpdateMessageRequest;
 use App\Http\Resources\MessageResource;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Trait\ApiResponse;
 use Illuminate\Http\Request;
-use App\Events\MessageRead;
 
 class MessageController extends Controller
 {
@@ -107,6 +109,25 @@ class MessageController extends Controller
         return $this->successResponse(
             null,
             'Message marked as read'
+        );
+    }
+
+
+    public function typing(
+        TypingRequest $request,
+        Conversation $conversation
+    ) {
+        $this->authorize('view', $conversation);
+
+        event(new UserTyping(
+            $conversation->id,
+            auth()->id(),
+            $request->boolean('typing')
+        ));
+
+        return $this->successResponse(
+            null,
+            'Typing status sent'
         );
     }
 }
