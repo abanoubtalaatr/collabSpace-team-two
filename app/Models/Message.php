@@ -3,24 +3,58 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Message extends Model
 {
-    protected $fillable = ['project_id', 'user_id', 'parent_id', 'message'];
+    use SoftDeletes;
 
-    public function project(){
-        return $this->belongsTo(Project::class);
+    protected $fillable = [
+        'conversation_id',
+        'sender_id',
+        'reply_to_id',
+        'message',
+        'edited_at'
+    ];
+
+    protected $casts = [
+        'edited_at' => 'datetime',
+    ];
+
+    public function conversation()
+    {
+        return $this->belongsTo(Conversation::class);
     }
 
-    public function user(){
-        return $this->belongsTo(User::class);
+
+    public function sender()
+    {
+        return $this->belongsTo(User::class, 'sender_id');
     }
 
-    public function parent(){
-        return $this->belongsTo(Message::class , 'parent_id');
+
+    public function replyTo()
+    {
+        return $this->belongsTo(Message::class, 'reply_to_id');
     }
 
-    public function replies(){
-        return $this->hasMany(Message::class , 'parent_id');
+    public function replies()
+    {
+        return $this->hasMany(Message::class, 'reply_to_id');
+    }
+
+    public function attachments()
+    {
+        return $this->hasMany(MessageAttachment::class);
+    }
+
+    public function reads()
+    {
+        return $this->hasMany(MessageRead::class);
+    }
+
+    public function mentions()
+    {
+        return $this->hasMany(MessageMention::class);
     }
 }

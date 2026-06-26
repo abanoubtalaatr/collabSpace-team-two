@@ -7,6 +7,26 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Enums\ProjectStatus;
 use App\Enums\ProjectPriority;
+
+class Project extends Model
+{
+    use Filterable;
+
+    protected $fillable = [
+        'name',
+        'slug',
+        'description',
+        'start_date',
+        'end_date',
+        'deadline',
+        'type',
+        'status',
+        'priority',
+        'created_by'
+    ];
+
+    protected $casts = [
+        'status' => ProjectStatus::class,
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 
@@ -25,35 +45,46 @@ class Project extends Model
 
     // relationships: 
     /*********************/
-    public function creator() 
-    { 
-        return $this->belongsTo(User::class, 'created_by'); 
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+
+    public function conversations()
+    {
+        return $this->hasMany(Conversation::class, 'project_id');
+    }
+
+    public function groupConversation()
+    {
+        return $this->hasOne(Conversation::class, 'project_id')
+            ->where('type', 'group');
     }
 
     public function teams(): BelongsToMany
     {
-        return $this->belongsToMany(Team::class); 
+        return $this->belongsToMany(Team::class);
     }
 
     public  function members(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'project_users', 'project_id', 'user_id'); 
+        return $this->belongsToMany(User::class, 'project_users', 'project_id', 'user_id');
     }
 
 
-    public function tasks(){
+    public function tasks()
+    {
         return $this->hasMany(Task::class);
     }
 
-    public function meetings(){
+    public function meetings()
+    {
         return $this->hasMany(Meeting::class);
     }
 
-    public function messages(){
-        return $this->hasMany(Message::class);
-    }
-
-    public function files(){
+    public function files()
+    {
         return $this->hasMany(File::class);
     }
 }
