@@ -4,11 +4,17 @@ namespace App\Models;
 
 use App\Enums\ProjectStatus;
 use App\Enums\TaskStatus;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
-    protected $fillable = ['project_id', 'team_id', 'name', 'description', 'status'];
+
+    use HasFactory; 
+
+    protected $fillable = ['project_id', 'name', 'description', 'status', 'priority', 'start_date', 'end_date', 'created_by'];
+
+    // Casts
     protected $casts = [
         'status' => TaskStatus::class
     ];
