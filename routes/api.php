@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\MeetingController;
 use App\Http\Controllers\Api\MeetingTranscriptController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AiChatController;
+
 
 
 Route::get('/user', function (Request $request) {
@@ -26,3 +28,7 @@ Route::apiResource('meeting-transcripts', MeetingTranscriptController::class); /
 //|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 Route::apiResource('meeting-ai-summaries', MeetingAiSummaryController::class);
+
+
+
+Route::post('/ask-ai', [AiChatController::class, 'ask']);
