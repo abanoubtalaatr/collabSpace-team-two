@@ -27,6 +27,18 @@ class Project extends Model
 
     protected $casts = [
         'status' => ProjectStatus::class,
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+
+
+class Project extends Model
+{
+    use Filterable, HasFactory; 
+
+    protected $fillable = ['name', 'description', 'start_date', 'end_date', 'deadline', 'type', 'status', 'priority', 'created_by'];
+
+    protected $casts = [
+        'status' => ProjectStatus::class ,
         'priority' => ProjectPriority::class
     ];
 
