@@ -9,15 +9,16 @@ class ListProjectsAction
 {
     public function execute(): Collection
     {
-        $user = auth()->user();
+        // $user = auth()->user();
 
-        if (in_array($user->role, ['admin', 'project_manager'])) {
-            return Project::with('members', 'tasks')->get(); 
-        }
+        // if (in_array($user->role->name, ['admin', 'project_manager'])) {
+        //     return Project::with('members', 'tasks')->get();
+        // }
 
-        return Project::whereHas('memebers', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })->get();
+        // return Project::whereHas('members', function ($query) use ($user) {
+        //     $query->where('user_id', $user->id);
+        // })->get();
 
+        return Project::all();
     }
 }

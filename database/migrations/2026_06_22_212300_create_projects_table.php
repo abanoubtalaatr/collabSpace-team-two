@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name'); 
             $table->string('slug')->unique();
             $table->string('type')->default('saas')->comment('saas, web, mobile, desktop, other');
             $table->date('start_date');
