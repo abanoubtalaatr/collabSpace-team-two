@@ -15,6 +15,7 @@ use App\Models\Conversation;
 use App\Models\Message;
 use App\Trait\ApiResponse;
 use Illuminate\Http\Request;
+use App\Events\MessageRead;
 
 class MessageController extends Controller
 {
@@ -92,7 +93,16 @@ class MessageController extends Controller
     {
         $this->authorize('view', $message);
 
-        $this->markMessageAsRead->execute($message);
+        $read = $this->markMessageAsRead->execute($message);
+
+        if ($read) {
+
+            event(new MessageRead(
+                $message,
+                auth()->id(),
+                $read->read_at,
+            ));
+        }
 
         return $this->successResponse(
             null,

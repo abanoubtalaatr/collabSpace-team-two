@@ -2,6 +2,7 @@
 
 namespace App\Actions\Message;
 
+use App\Events\MessageSent;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\MessageMention;
@@ -76,11 +77,15 @@ class SendMessageAction
             ]);
         }
 
-        return $message->load([
+        $message->loadMissing([
             'sender',
-             'replyTo.sender',
+            'replyTo.sender',
             'attachments',
             'mentions',
         ]);
+
+        event(new MessageSent($message));
+
+        return $message;
     }
 }
