@@ -12,9 +12,6 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
         // 1. نـكريت يوزر أساسي
@@ -51,6 +48,10 @@ class DatabaseSeeder extends Seeder
             'end_time' => '11:00:00',            // 🎯 وقت النهاية (احتياطاً لو إجباري)
             'created_at' => now(),
             'updated_at' => now(),
+        $this->call([
+            UserSeeder::class,
+            TaskSeeder::class,
+            ProjectSeeder::class,
         ]);
     } // <-- قفلة دالة الـ run اللي كانت ناقصة ومسببة الإيرور 🎯
 } // قفلة الكلاس
