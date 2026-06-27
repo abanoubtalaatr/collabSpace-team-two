@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\ProjectPriority;
 use App\Enums\TaskStatus;
+use App\Enums\TaskPriority;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -35,6 +36,4 @@ class Task extends Model
     {
         return $this->belongsToMany(File::class, 'task_attachment', 'task_id', 'file_id');
     }
-
-
 }

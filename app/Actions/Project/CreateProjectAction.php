@@ -4,6 +4,7 @@ namespace App\Actions\Project;
 
 use App\Http\Requests\Api\CreateProjectRequest;
 use App\Models\Project;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class CreateProjectAction
@@ -19,21 +20,32 @@ class CreateProjectAction
         $validated = $request->validated();
 
         // Create the project
-        $project = Project::create($validated);
+        DB::beginTransaction();
+        try {
+            $project = Project::create($validated);
 
-        // add the users if exists to the project 
-        if ($request->has('users')) {
-            $project->users()->attach($request->input('users'));
+            // // add the teams if exists to the project 
+            // if ($request->has('teams')) {
+            //     $project->teams()->attach($request->input('teams'));
+            // }
+
+            // // add the attached files to the project
+            // if ($request->has('files')) {
+            //     foreach ($request->input('files') as $file) {
+            //         $project->files()->create([
+            //             'name' => $file->getClientOriginalName(),
+            //             'path' => $file->store('projects/' . $project->id, 'public'),
+            //             'type' => $file->getClientOriginalExtension(),
+            //             'size' => $file->getSize(),
+            //         ]);
+            //     }
+            // }
+
+            DB::commit();
+            return $project;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
         }
-
-        // add the attached files to the project
-        if ($request->has('files')) {
-            $project->files()->attach($request->input('files'));
-        }
-
-        // logging the project creation
-        Log::info('Project created successfully', ['project_id' => $project->id, 'project_name' => $project->name]);
-
-        return $project;
     }
 }

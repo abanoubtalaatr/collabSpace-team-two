@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
+use App\Enums\ProjectPriority;
+use App\Enums\ProjectStatus;
 use App\Models\Concerns\Filterable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use App\Enums\ProjectStatus;
-use App\Enums\ProjectPriority;
 
 class Project extends Model
 {
-    use Filterable;
+    use Filterable, HasFactory;
 
     protected $fillable = [
         'name',
@@ -22,22 +23,18 @@ class Project extends Model
         'type',
         'status',
         'priority',
-        'created_by'
+        'created_by',
     ];
 
     protected $casts = [
         'status' => ProjectStatus::class,
-        'priority' => ProjectPriority::class
+        'priority' => ProjectPriority::class,
     ];
 
-
-    // relationships: 
-    /*********************/
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
-
 
     public function conversations()
     {
@@ -55,11 +52,10 @@ class Project extends Model
         return $this->belongsToMany(Team::class);
     }
 
-    public  function members(): BelongsToMany
+    public function members(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'project_users', 'project_id', 'user_id');
     }
-
 
     public function tasks()
     {
