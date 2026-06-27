@@ -16,6 +16,8 @@ use App\Http\Controllers\Api\Task\UpdateTaskStatusController;
 use App\Http\Controllers\FileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AiChatController;
+
 
 Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
@@ -47,6 +49,11 @@ Route::middleware([
     Route::delete('messages/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
     Route::post('messages/{message}/read', [MessageController::class, 'markAsRead'])->name('messages.markAsRead');
 
+Route::apiResource('meeting-ai-summaries', MeetingAiSummaryController::class);
+
+
+
+Route::post('/ask-ai', [AiChatController::class, 'ask']);
     Route::apiResource('meetings', MeetingController::class);
     Route::apiResource('meeting-transcripts', MeetingTranscriptController::class);
     Route::apiResource('meeting-ai-summaries', MeetingAiSummaryController::class);
