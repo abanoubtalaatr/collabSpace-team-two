@@ -74,6 +74,60 @@ Route::post('/ask-ai', [AiChatController::class, 'ask']);
         Route::delete('/', [FileController::class, 'destroy']);
     });
 
+    // Conversations Routes: 
+    Route::get(
+        'conversations',
+        [ConversationController::class, 'index']
+    );
+
+    Route::get(
+        'conversations/{conversation}',
+        [ConversationController::class, 'show']
+    );
+
+    Route::post(
+        'projects/{project}/conversations/private',
+        [ConversationController::class, 'startPrivate']
+    );
+
+    Route::get(
+        'projects/{project}/conversation',
+        [ConversationController::class, 'getProjectConversation']
+    );
+
+    // Messages Routes: 
+
+    Route::get(
+        'conversations/{conversation}/messages',
+        [MessageController::class, 'index']
+    )->name('messages.index');
+
+    Route::post(
+        'conversations/{conversation}/messages',
+        [MessageController::class, 'store']
+    )->name('messages.store');
+
+    Route::post(
+        'conversations/{conversation}/typing',
+        [MessageController::class, 'typing']
+    )->name('messages.typing');
+
+
+    Route::put(
+        'messages/{message}',
+        [MessageController::class, 'update']
+    )->name('messages.update');
+
+    Route::delete(
+        'messages/{message}',
+        [MessageController::class, 'destroy']
+    )->name('messages.destroy');
+
+    Route::post(
+        'messages/{message}/read',
+        [MessageController::class, 'markAsRead']
+    )->name('messages.markAsRead');
+
     Route::apiResource('tasks', TaskController::class);
     Route::apiResource('projects.tasks', ProjectTaskController::class)->scoped(['project' => 'id'])->only(['index', 'store']);
     Route::apiResource('tasks.attachments', TaskAttachmentController::class)->scoped(['task' => 'id'])->only(['index', 'store']);

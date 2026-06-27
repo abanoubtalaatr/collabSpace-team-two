@@ -6,12 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class MessageRead extends Model
 {
-        protected $fillable = [
+    protected $fillable = [
         'message_id',
         'user_id',
         'read_at'
     ];
 
+    protected $casts = [
+        'read_at' => 'datetime',
+    ];
 
     public function message()
     {
@@ -22,5 +25,4 @@ class MessageRead extends Model
     {
         return $this->belongsTo(User::class);
     }
-
 }

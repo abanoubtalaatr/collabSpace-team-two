@@ -2,9 +2,12 @@
 
 namespace App\Actions\Message;
 
+use App\Events\MessageSent;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\MessageMention;
+use App\Notifications\MentionNotification;
+use App\Notifications\NewMessageNotification;
 use Illuminate\Auth\Access\AuthorizationException;
 
 class SendMessageAction
@@ -74,13 +77,35 @@ class SendMessageAction
                 'message_id' => $message->id,
                 'mentioned_user_id' => $mentionedUser->id,
             ]);
+
+            if ($mentionedUser->id !== $user->id) {
+                $mentionedUser->notify(
+                    new MentionNotification($message)
+                );
+            }
         }
 
-        return $message->load([
+        $message->loadMissing([
             'sender',
-             'replyTo.sender',
+            'replyTo.sender',
             'attachments',
             'mentions',
         ]);
+
+        event(new MessageSent($message));
+
+        $mentionedIds = $mentionedUsers->pluck('id');
+
+        $conversation->participants()
+            ->where('user_id', '!=', $user->id)
+            ->get()
+            ->reject(fn($participant) => $mentionedIds->contains($participant->id))
+            ->each(function ($participant) use ($message) {
+                $participant->notify(
+                    new NewMessageNotification($message)
+                );
+            });
+
+        return $message;
     }
 }
