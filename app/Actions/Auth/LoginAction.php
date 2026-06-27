@@ -3,23 +3,19 @@
 namespace App\Actions\Auth;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class LoginAction
 {
     public function execute(array $data)
     {
-        $credentials = [
-            'email'    => $data['email'],
-            'password' => $data['password'],
-        ];
+        $user = User::where('email', $data['email'])->first();
 
-        if (!Auth::attempt($credentials)) {
+        if (! $user || ! Hash::check($data['password'], $user->password)) {
             return false;
         }
 
-        $user = Auth::user();
-        $expiration = isset($data['remember_me']) && $data['remember_me']
+        $expiration = ! empty($data['remember_me'])
             ? now()->addDays(30)
             : now()->addDay();
 

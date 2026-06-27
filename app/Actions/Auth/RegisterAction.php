@@ -3,7 +3,6 @@
 namespace App\Actions\Auth;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 
 class RegisterAction
 {
@@ -12,7 +11,7 @@ class RegisterAction
         $user = User::create([
             'name'     => $data['name'],
             'email'    => $data['email'],
-            'password' => Hash::make($data['password']),
+            'password' => $data['password'],
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;

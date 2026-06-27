@@ -11,12 +11,21 @@ class LoginRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('email')) {
+            $this->merge([
+                'email' => strtolower(trim((string) $this->input('email'))),
+            ]);
+        }
+    }
+
     public function rules(): array
     {
         return [
             'email' => ['required', 'email'],
-            'password' => ['required'],
-            'remember_me' => ['boolean'],
+            'password' => ['required', 'string'],
+            'remember_me' => ['sometimes', 'nullable', 'boolean'],
         ];
     }
 
